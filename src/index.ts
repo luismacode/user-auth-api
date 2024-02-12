@@ -1,4 +1,5 @@
 import { envs } from './config/envs';
+import { AppRoutes } from './presentation/routes';
 import { AppServer } from './presentation/server';
 
 (() => {
@@ -8,5 +9,8 @@ import { AppServer } from './presentation/server';
 })();
 
 async function main(): Promise<void> {
-    await new AppServer({ port: envs.PORT }).start();
+    await new AppServer({
+        port: envs.PORT,
+        routes: new AppRoutes().routes
+    }).start();
 }

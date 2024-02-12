@@ -1,15 +1,19 @@
-import express from 'express';
+import express, { type Router } from 'express';
 interface Options {
     port: number;
+    routes: Router;
 }
 export class AppServer {
     private readonly app = express();
     private readonly port: number;
-    constructor({ port }: Options) {
+    private readonly routes: Router;
+    constructor({ port, routes }: Options) {
         this.port = port;
+        this.routes = routes;
     }
 
     async start(): Promise<void> {
+        this.app.use(this.routes);
         this.app.listen(this.port, () => {
             console.log(`Server running on port:${this.port}`);
         });
