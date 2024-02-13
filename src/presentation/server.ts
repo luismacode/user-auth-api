@@ -13,6 +13,8 @@ export class AppServer {
     }
 
     async start(): Promise<void> {
+        this.app.use(express.json());
+        this.app.use(express.urlencoded({ extended: true }));
         this.app.use(this.routes);
         this.app.listen(this.port, () => {
             console.log(`Server running on port:${this.port}`);

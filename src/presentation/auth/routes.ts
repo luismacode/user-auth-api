@@ -1,12 +1,17 @@
 import { Router } from 'express';
 import { AuthController } from './controller';
+import { AuthDatasourceImpl } from '../../infrastructure/datasources/auth.datasource.impl';
+import { AuthRepositoryImpl } from '../../infrastructure/repositories/auth.repository.impl';
 
 export class AuthRoutes {
     private readonly router = Router();
     public get routes(): Router {
-        const controller = new AuthController();
-        this.router.post('/signin', controller.signinUser.bind(controller));
+        const datasource = new AuthDatasourceImpl();
+        const authRepository = new AuthRepositoryImpl(datasource);
+        const controller = new AuthController(authRepository);
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.router.post('/signup', controller.signupUser.bind(controller));
+        // this.router.post('/signin', controller.signinUser.bind(controller));
 
         return this.router;
     }
