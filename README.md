@@ -16,8 +16,18 @@ Once the initial prototype is validated, it is planned to add progressive improv
 ## Definition Entities
 
 - User: User created in the system, all fields are mandatory.
-  - username: length must be between 4 and 30 characters.
-  - email: Must comply with [RFC 5322](https://www.ietf.org/rfc/rfc5322.txt).
+  - id: Must comply with UUID format.
+  - firstname: Length must be between 4 and 30 characters.
+  - lastname: Length must be between 5 and 50 characters.
+  - username:
+    - Length must be between 8 and 30 characters.
+    - Must be unique within the app.
+  - photo:
+    - Must comply with the URL address format.
+    - The URL should point to the correct location of the image.
+  - email:
+    - Must comply with [RFC 5322](https://www.ietf.org/rfc/rfc5322.txt).
+    - Must be unique.
   - password:
     - Length must be at least 16 characters.
     - Must include numbers or symbols.
