@@ -2,6 +2,7 @@ import { type Request, type Response } from 'express';
 import { SignupUserDTO } from '../../domain/dtos/auth/signup-user.dto';
 import { type AuthRepository } from '../../domain/repositories/auth.repository';
 import { CustomError } from '../../domain/errors/custom.error';
+import { JwtAdapter } from '../../config/jwt';
 
 export class AuthController {
     constructor(private readonly authRepository: AuthRepository) {
@@ -33,7 +34,12 @@ export class AuthController {
         this.authRepository
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             .signup(signupUserDTO!)
-            .then(user => res.json(user))
+            .then(async user =>
+                res.json({
+                    user,
+                    token: await JwtAdapter.generateToken({ id: user.id })
+                })
+            )
             .catch(error => this.handleError(error, res));
     }
 }
