@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 import { SignupUserDTO } from '../../domain/dtos/auth/signup-user.dto';
 import { type AuthRepository } from '../../domain/repositories/auth.repository';
-import { type UserEntity } from '../../domain/entities/user.entity';
+import { CustomError } from '../../domain/errors/custom.error';
 
 export class AuthController {
     constructor(private readonly authRepository: AuthRepository) {
@@ -9,14 +9,22 @@ export class AuthController {
         // this.signupUser = this.signupUser.bind(this);
     }
 
+    private readonly handleError = (
+        error: unknown,
+        res: Response
+    ): Response => {
+        if (error instanceof CustomError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    };
+
     signinUser(req: Request, res: Response): Response {
         return res.json(req.body);
     }
 
-    async signupUser(
-        req: Request,
-        res: Response
-    ): Promise<Response<UserEntity, any> | undefined> {
+    signupUser(req: Request, res: Response): Response | undefined {
         const { body } = req;
         const [error, signupUserDTO] = SignupUserDTO.create(
             body as Record<string, string>
@@ -26,6 +34,6 @@ export class AuthController {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             .signup(signupUserDTO!)
             .then(user => res.json(user))
-            .catch(error => res.status(500).json(error));
+            .catch(error => this.handleError(error, res));
     }
 }
