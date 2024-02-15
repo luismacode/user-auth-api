@@ -2,11 +2,14 @@ import { Router } from 'express';
 import { AuthController } from './controller';
 import { AuthDatasourceImpl } from '../../infrastructure/datasources/auth.datasource.impl';
 import { AuthRepositoryImpl } from '../../infrastructure/repositories/auth.repository.impl';
+import { BcryptAdapter } from '../../config/bcrypt';
 
 export class AuthRoutes {
     private readonly router = Router();
     public get routes(): Router {
-        const datasource = new AuthDatasourceImpl();
+        const datasource = new AuthDatasourceImpl(
+            BcryptAdapter.hash.bind(this)
+        );
         const authRepository = new AuthRepositoryImpl(datasource);
         const controller = new AuthController(authRepository);
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
