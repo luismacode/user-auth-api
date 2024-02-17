@@ -7,7 +7,10 @@ import { CustomError } from '../../domain/errors/custom.error';
 import { userMapper } from '../mappers/user.mapper';
 
 export class AuthDatasourceImpl implements AuthDatasource {
-    constructor(private readonly hash: (password: string) => string) {}
+    private readonly uuid: string;
+    constructor(private readonly hash: (password: string) => string) {
+        this.uuid = randomUUID();
+    }
 
     async signup(signupUserDTO: SignupUserDTO): Promise<UserEntity> {
         const { firstname, lastname, username, email, password } =
@@ -16,8 +19,8 @@ export class AuthDatasourceImpl implements AuthDatasource {
             const exists = await UserModel.findOne({ email });
             if (exists instanceof UserModel)
                 throw CustomError.badRequest('User already exists');
-            const user = await UserModel.create({
-                _id: randomUUID(),
+            const user = new UserModel({
+                _id: this.uuid,
                 firstname,
                 lastname,
                 username,
