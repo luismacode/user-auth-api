@@ -3,6 +3,7 @@ import { SignupUserDTO } from '../../domain/dtos/auth/signup-user.dto';
 import { type AuthRepository } from '../../domain/repositories/auth.repository';
 import { CustomError } from '../../domain/errors/custom.error';
 import { JwtAdapter } from '../../config/jwt';
+import { UserModel } from '../../database/mongo/models/user.model';
 
 export class AuthController {
     constructor(private readonly authRepository: AuthRepository) {
@@ -42,4 +43,12 @@ export class AuthController {
             )
             .catch(error => this.handleError(error, res));
     }
+
+    getUsers = (req: Request, res: Response): void => {
+        UserModel.find()
+            .then(users => res.json({ user: req.body.user }))
+            .catch(() =>
+                res.status(500).json({ error: 'Internal server error' })
+            );
+    };
 }

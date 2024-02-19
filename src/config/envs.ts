@@ -6,5 +6,6 @@ export const envs = {
     DATABASE_CONNECTION_URL: get('DATABASE_CONNECTION_URL')
         .required()
         .asUrlString(),
-    DATABASE_NAME: get('DATABASE_NAME').required().asString()
+    DATABASE_NAME: get('DATABASE_NAME').required().asString(),
+    JWT_SEED: get('JWT_SEED').required().asString()
 };

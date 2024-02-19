@@ -1,9 +1,12 @@
 import jwt from 'jsonwebtoken';
+import { envs } from './envs';
+
+const JWT_SEED = envs.JWT_SEED;
 
 export class JwtAdapter {
     private readonly seed: string;
     private constructor() {
-        this.seed = 'SEED';
+        this.seed = JWT_SEED;
     }
 
     static async generateToken(
@@ -20,6 +23,15 @@ export class JwtAdapter {
                     resolve(token ?? undefined);
                 }
             );
+        });
+    }
+
+    static async verifyToken<T>(token: string): Promise<T | null> {
+        return await new Promise(resolve => {
+            jwt.verify(token, new JwtAdapter().seed, (error, decoded) => {
+                if (error !== null) resolve(null);
+                resolve(decoded as T);
+            });
         });
     }
 }
