@@ -4,6 +4,7 @@ import { type AuthRepository } from '../../domain/repositories/auth.repository';
 import { CustomError } from '../../domain/errors/custom.error';
 import { JwtAdapter } from '../../config/jwt';
 import { UserModel } from '../../database/mongo/models/user.model';
+import { SignupUser } from '../../domain/usecases/signup-user.usecase';
 
 export class AuthController {
     constructor(private readonly authRepository: AuthRepository) {
@@ -32,15 +33,10 @@ export class AuthController {
             body as Record<string, string>
         );
         if (error !== undefined) return res.status(400).json({ error });
-        this.authRepository
+        new SignupUser(this.authRepository, JwtAdapter.generateToken.bind(this))
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .signup(signupUserDTO!)
-            .then(async user =>
-                res.json({
-                    user,
-                    token: await JwtAdapter.generateToken({ id: user.id })
-                })
-            )
+            .execute(signupUserDTO!)
+            .then(data => res.json(data))
             .catch(error => this.handleError(error, res));
     }
 
