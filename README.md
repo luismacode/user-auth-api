@@ -18,7 +18,7 @@ Once the initial prototype is validated, it is planned to add progressive improv
 - User: User created in the system, all fields are mandatory.
   - id: Must comply with UUID format.
   - firstname: Length must be between 4 and 30 characters.
-  - lastname: Length must be between 5 and 50 characters.
+  - lastname: Length must be between 5 and 40 characters.
   - username:
     - Length must be between 8 and 30 characters.
     - Must be unique within the app.
@@ -32,10 +32,7 @@ Once the initial prototype is validated, it is planned to add progressive improv
     - Length must be at least 16 characters.
     - Must include numbers or symbols.
     - Must include uppercase and lowercase characters.
-    - Must not start with numbers or symbols.
-    - Must not use the same character more than once.
-    - Must not use sequential characters, e.g. abc, 789.
-    - Must not use Similar characters like l, L, o, O.
+    - Must not contain whitespaces.
 
 ## functional requirements
 

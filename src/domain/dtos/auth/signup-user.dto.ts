@@ -19,18 +19,27 @@ export class SignupUserDTO {
             return ['Missing Lastname'];
         if (username === undefined || username === '')
             return ['Missing username'];
-        if (!Validators.email.test(email)) return ['Email is not valid'];
+        if (email === undefined || email === '') return ['Missing email'];
         if (password === undefined || password === '')
             return ['Missing password'];
+        if (!Validators.email.test(email)) return ['Email is not valid'];
+        if (!Validators.firstname.test(firstname))
+            return ['Firstname is not valid'];
+        if (!Validators.lastname.test(lastname))
+            return ['Lastname is not valid'];
+        if (!Validators.username.test(username))
+            return ['Username is not valid'];
+        if (!Validators.password.test(password))
+            return ['Password is not valid'];
 
         return [
             undefined,
             new SignupUserDTO(
-                firstname,
-                lastname,
-                username,
+                firstname.trim(),
+                lastname.trim(),
+                username.trim(),
                 email.toLowerCase(),
-                password
+                password.trim()
             )
         ];
     }

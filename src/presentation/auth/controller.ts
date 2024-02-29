@@ -33,11 +33,16 @@ export class AuthController {
             body as Record<string, string>
         );
         if (error !== undefined) return res.status(400).json({ error });
-        new SignupUser(this.authRepository, JwtAdapter.generateToken.bind(this))
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .execute(signupUserDTO!)
-            .then(data => res.json(data))
-            .catch(error => this.handleError(error, res));
+        else {
+            new SignupUser(
+                this.authRepository,
+                JwtAdapter.generateToken.bind(this)
+            )
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                .execute(signupUserDTO!)
+                .then(data => res.json(data))
+                .catch(error => this.handleError(error, res));
+        }
     }
 
     getUsers = (req: Request, res: Response): void => {

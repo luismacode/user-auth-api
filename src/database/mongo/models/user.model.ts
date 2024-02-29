@@ -12,7 +12,7 @@ const UserSchema = new Schema(
         lastname: {
             type: String,
             minLength: 5,
-            maxLength: 50,
+            maxLength: 40,
             required: [true, 'Lastname is required']
         },
         username: {
