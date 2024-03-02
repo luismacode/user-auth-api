@@ -5,10 +5,14 @@ import { type SignupUserDTO } from '../../domain/dtos/auth/signup-user.dto';
 import { type UserEntity } from '../../domain/entities/user.entity';
 import { CustomError } from '../../domain/errors/custom.error';
 import { userMapper } from '../mappers/user.mapper';
+import { type SigninUserDTO } from '../../domain/dtos/auth/signin-user.dto';
 
 export class AuthDatasourceImpl implements AuthDatasource {
     private readonly uuid: string;
-    constructor(private readonly hash: (password: string) => string) {
+    constructor(
+        private readonly hash: (password: string) => string,
+        private readonly compare: (password: string, hashed: string) => boolean
+    ) {
         this.uuid = randomUUID();
     }
 
@@ -34,6 +38,24 @@ export class AuthDatasourceImpl implements AuthDatasource {
             if (error instanceof CustomError) {
                 throw error;
             }
+            throw CustomError.internalServer();
+        }
+    }
+
+    async signin(signinUserDTO: SigninUserDTO): Promise<UserEntity> {
+        const { email, password } = signinUserDTO;
+        try {
+            const user = await UserModel.findOne({ email });
+            if (user instanceof UserModel) {
+                const isMatching = this.compare(password, user.password);
+                if (!isMatching)
+                    throw CustomError.badRequest('Wrong Credentials');
+                return userMapper(user.toObject());
+            } else {
+                throw CustomError.badRequest('Wrong Credentials');
+            }
+        } catch (error) {
+            console.log(error);
             throw CustomError.internalServer();
         }
     }

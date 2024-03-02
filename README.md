@@ -40,7 +40,6 @@ Once the initial prototype is validated, it is planned to add progressive improv
 - The system must encrypt the passwords of each authorized user before storing them in the database.
 - The system must generate and send a token (or cookie) to the user that contains information about the user's identity.
 - The system must allow the user to access the resources they request, as long as they are authenticated or authorized, otherwise reject access.
-- The system must allow the user to log out.
 - The system must implement a RESTful API that exposes the endpoints necessary for user authentication and authorization.
 - The system must integrate with other services or systems that require user authentication, such as the frontend
 

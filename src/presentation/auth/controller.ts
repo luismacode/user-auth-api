@@ -1,16 +1,15 @@
 import { type Request, type Response } from 'express';
 import { SignupUserDTO } from '../../domain/dtos/auth/signup-user.dto';
+import { SigninUserDTO } from '../../domain/dtos/auth/signin-user.dto';
 import { type AuthRepository } from '../../domain/repositories/auth.repository';
 import { CustomError } from '../../domain/errors/custom.error';
 import { JwtAdapter } from '../../config/jwt';
 import { UserModel } from '../../database/mongo/models/user.model';
 import { SignupUser } from '../../domain/usecases/signup-user.usecase';
+import { SigninUser } from '../../domain/usecases/signin-user.usecase';
 
 export class AuthController {
-    constructor(private readonly authRepository: AuthRepository) {
-        // this.signinUser = this.signinUser.bind(this);
-        // this.signupUser = this.signupUser.bind(this);
-    }
+    constructor(private readonly authRepository: AuthRepository) {}
 
     private readonly handleError = (
         error: unknown,
@@ -23,8 +22,22 @@ export class AuthController {
         return res.status(500).json({ error: 'Internal Server Error' });
     };
 
-    signinUser(req: Request, res: Response): Response {
-        return res.json(req.body);
+    signinUser(req: Request, res: Response): Response | undefined {
+        const { body } = req;
+        const [error, signinUserDTO] = SigninUserDTO.create(
+            body as Record<string, string>
+        );
+        if (error !== undefined) return res.status(400).json({ error });
+        else {
+            new SigninUser(
+                this.authRepository,
+                JwtAdapter.generateToken.bind(this)
+            )
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                .execute(signinUserDTO!)
+                .then(data => res.json(data))
+                .catch(error => this.handleError(error, res));
+        }
     }
 
     signupUser(req: Request, res: Response): Response | undefined {

@@ -9,13 +9,13 @@ export class AuthRoutes {
     private readonly router = Router();
     public get routes(): Router {
         const datasource = new AuthDatasourceImpl(
-            BcryptAdapter.hash.bind(this)
+            BcryptAdapter.hash.bind(this),
+            BcryptAdapter.compare.bind(this)
         );
         const authRepository = new AuthRepositoryImpl(datasource);
         const controller = new AuthController(authRepository);
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.router.post('/signup', controller.signupUser.bind(controller));
-        // this.router.post('/signin', controller.signinUser.bind(controller));
+        this.router.post('/signin', controller.signinUser.bind(controller));
         this.router.get(
             '/',
             [AuthMiddleware.validateJWT.bind(this)],

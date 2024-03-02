@@ -9,4 +9,8 @@ export class AuthRepositoryImpl implements AuthRepository {
     async signup(signupUserDTO: SignupUserDTO): Promise<UserEntity> {
         return await this.authDatasource.signup(signupUserDTO);
     }
+
+    async signin(signinUserDTO: SignupUserDTO): Promise<UserEntity> {
+        return await this.authDatasource.signin(signinUserDTO);
+    }
 }
